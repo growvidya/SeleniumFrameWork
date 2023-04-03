@@ -1,32 +1,32 @@
 package com.org;
 
-import com.org.config.FrameworkConfig;
-import io.github.bonigarcia.wdm.WebDriverManager;
-import org.aeonbits.owner.ConfigFactory;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
+
+import com.org.Annotations.FrameWorkAnnotation;
+import com.org.pages.HomePage;
+import com.org.pages.LoginPage;
+import org.testng.Assert;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-public class LoginTest {
+public class LoginTest extends BaseTest { // logintest is type of BaseTest -- is a relation
 
-    @Test(description = "Login to the application")
-    public void Login() {
+     @DataProvider
+    public static Object[][] getData() {
 
-        WebDriverManager.chromedriver().setup();
-        ChromeOptions options = new ChromeOptions();
-        options.addArguments("--remote-allow-origins=*");
-        WebDriver driver = new ChromeDriver(options);
-        driver.manage().window().maximize();
-        FrameworkConfig config = ConfigFactory.create(FrameworkConfig.class);
-        driver.get(config.url());
-        driver.findElement(By.name("Username")).sendKeys("testvidya");
-        driver.findElement(By.name("Password")).sendKeys(("TestVidya23"));
-        driver.findElement(By.xpath("//input[@type='submit']")).click();
-        System.out.println("Title = " + driver.getTitle());
-        driver.quit();
+        return new Object[][]{
+                {"Admin","admin123","OrangeHRM"}
+        };
     }
+    @Test(description = "Login to the application", dataProvider = "getData")
+    @FrameWorkAnnotation(author = "vidya")
+    public void Login(String username, String password, String expectedTitle) {
+        LoginPage login = new LoginPage();
+        login.loginApplication(username,password);
+        HomePage homePage = new HomePage();
+        Assert.assertEquals(homePage.getHomePageTitle(),expectedTitle);
+        //System.out.println("Title = " + DriverManager.getDriver().getTitle());
+    }
+
 
 }
 

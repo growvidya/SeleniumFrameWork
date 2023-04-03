@@ -6,4 +6,5 @@ import org.aeonbits.owner.Config;
 public interface FrameworkConfig extends Config {
     long timeout();
     String url();
+    String browser();
 }
